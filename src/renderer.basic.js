@@ -80,13 +80,14 @@ var basicRenderer = Renderer.factory({
 
         return res;
     },
+    // KW: Removing "/Attachments" from src, to stay compatible with roadkill-style img urls
     'IMG': function(node) {
         var res = '',
             src = node.getAttribute('src'),
             alt = node.alt;
 
         if (src) {
-            res = '![' + this.escapeTextForLink(alt) + '](' + src + ')';
+            res = '![' + this.escapeTextForLink(alt) + '](' + src.replace(/\/Attachments\//g, '/') + ')';
         }
 
         return res;

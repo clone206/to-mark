@@ -143,7 +143,7 @@ Renderer.prototype.convert = function(node, subContent) {
     var result,
         converter = this._getConverter(node);
 
-    if (node && node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('data-tomark-pass')) {
+    if (node && node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('data-tomark-pass') || node.hasAttribute('data-skip')) {
         node.removeAttribute('data-tomark-pass');
         result = node.outerHTML;
     } else if (converter) {

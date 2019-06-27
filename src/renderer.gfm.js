@@ -21,23 +21,25 @@ var gfmRenderer = Renderer.factory(basicRenderer, {
     'DEL, S': function(node, subContent) {
         return '~~' + subContent + '~~';
     },
+    // KW: modified to work with roadkill
     'PRE CODE': function(node, subContent) {
-        var backticks;
         var language = '';
         var numberOfBackticks = node.getAttribute('data-backticks');
 
         if (node.getAttribute('data-language')) {
-            language = ' ' + node.getAttribute('data-language');
+            language = node.getAttribute('data-language');
         }
         numberOfBackticks = parseInt(numberOfBackticks, 10);
-        backticks = isNaN(numberOfBackticks) ? '```' : Array(numberOfBackticks + 1).join('`');
+        if (isNaN(numberOfBackticks) && language === '') {
+            return subContent.replace(/^(.*)$/gm, '\ \ \ \ $1');
+        }
 
         subContent = subContent.replace(/(\r\n)|(\r)|(\n)/g, this.lineFeedReplacement);
 
-        return '\n\n' + backticks + language + '\n' + subContent + '\n' + backticks + '\n\n';
+        return '\n\n[[[code lang=' + language + '|\n' + subContent + '\n]]]';
     },
     'PRE': function(node, subContent) {
-        return subContent;
+        return subContent + '\n\n';
     },
     'UL LI': function(node, subContent) {
         return basicRenderer.convert(node, makeTaskIfNeed(node, subContent));
