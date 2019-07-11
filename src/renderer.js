@@ -176,14 +176,19 @@ Renderer.prototype._canConvert = function(node) {
  */
 Renderer.prototype._isValidTable = function(node) {
     var TRs = node.getElementsByTagName("tr"),
+        thead = node.getElementsByTagName("thead"),
         isValid = false;
 
-    // Must be a 2x2 table with headers
+    // Must be at least a 2x2 table including headers
     if (
-        TRs
+        thead
+        && thead.item(0)
+        && thead.item(0).getElementsByTagName("tr")
+        && thead.item(0).getElementsByTagName("tr").item(0)
+        && thead.item(0).getElementsByTagName("tr").item(0).getElementsByTagName("th")
+        && thead.item(0).getElementsByTagName("tr").item(0).getElementsByTagName("th").item(1)
+        && TRs
         && TRs.item(1)
-        && TRs.item(0).getElementsByTagName("th")
-        && TRs.item(0).getElementsByTagName("th").item(1)
         && TRs.item(1).getElementsByTagName("td")
         && TRs.item(1).getElementsByTagName("td").item(1)
     ) {
