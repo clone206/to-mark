@@ -109,4 +109,4 @@ gulp.task('stripDebug', function() {
     return gulp.src('dist/to-mark.js').pipe(stripDebug()).pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build', gulpSync.sync(['lint', 'bundle', 'uglify']));
+gulp.task('build', gulpSync.sync(['bundle', 'uglify']));

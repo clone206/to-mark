@@ -143,7 +143,7 @@ Renderer.prototype.convert = function(node, subContent) {
     var result,
         converter = this._getConverter(node);
 
-    if (node && node.nodeType === Node.ELEMENT_NODE && (node.hasAttribute('data-tomark-pass') || node.hasAttribute('data-skip'))) {
+    if (node && node.nodeType === Node.ELEMENT_NODE && (node.hasAttribute('data-tomark-pass') || node.hasAttribute('data-skip') || !this._canConvert(node))) {
         node.removeAttribute('data-tomark-pass');
         result = node.outerHTML;
     } else if (converter) {
@@ -153,6 +153,44 @@ Renderer.prototype.convert = function(node, subContent) {
     }
 
     return result || '';
+};
+
+/**
+ * Can this element be converted to valid markdown?
+ */
+Renderer.prototype._canConvert = function(node) {
+    var tagName = node.tagName,
+        canConvert = true;
+
+    switch (tagName) {
+        case "TABLE": {
+            canConvert = this._isValidTable(node);
+        }
+    }
+
+    return canConvert;
+};
+
+/**
+ * Can this table be converted into valid markdown?
+ */
+Renderer.prototype._isValidTable = function(node) {
+    var TRs = node.getElementsByTagName("tr"),
+        isValid = false;
+
+    // Must be a 2x2 table with headers
+    if (
+        TRs
+        && TRs.item(1)
+        && TRs.item(0).getElementsByTagName("th")
+        && TRs.item(0).getElementsByTagName("th").item(1)
+        && TRs.item(1).getElementsByTagName("td")
+        && TRs.item(1).getElementsByTagName("td").item(1)
+    ) {
+        isValid = true;
+    }
+
+    return isValid;
 };
 
 Renderer.prototype._getInlineHtml = function(node, subContent) {
